@@ -20,14 +20,15 @@ export function ProfitCalculator({ dishes, specifications }) {
 
   const original = useMemo(() => {
     if (!selectedSpec) return null
-    const cost = selectedSpec.ingredient_cost + selectedSpec.packaging_cost
+    const specWastage = selectedSpec.wastage_cost || 0
+    const cost = selectedSpec.ingredient_cost + selectedSpec.packaging_cost + specWastage
     const grossProfit = selectedSpec.sale_price - cost
     const grossMargin = selectedSpec.sale_price > 0 ? grossProfit / selectedSpec.sale_price : 0
     return {
       salePrice: selectedSpec.sale_price,
       ingredientCost: selectedSpec.ingredient_cost,
       packagingCost: selectedSpec.packaging_cost,
-      wastage: 0,
+      wastage: specWastage,
       cost,
       grossProfit,
       grossMargin,
@@ -51,12 +52,12 @@ export function ProfitCalculator({ dishes, specifications }) {
       newSalePrice = Math.max(0, original.salePrice + priceAdjNum)
       newIngredientCost = Math.max(0, original.ingredientCost + ingredAdjNum)
       newPackagingCost = Math.max(0, original.packagingCost + packAdjNum)
-      newWastage = Math.max(0, wasteAdjNum)
+      newWastage = Math.max(0, original.wastage + wasteAdjNum)
     } else {
       newSalePrice = Math.max(0, original.salePrice * (1 + priceAdjNum / 100))
       newIngredientCost = Math.max(0, original.ingredientCost * (1 + ingredAdjNum / 100))
       newPackagingCost = Math.max(0, original.packagingCost * (1 + packAdjNum / 100))
-      newWastage = Math.max(0, original.ingredientCost * (wasteAdjNum / 100))
+      newWastage = Math.max(0, newIngredientCost * (wasteAdjNum / 100))
     }
 
     const newCost = newIngredientCost + newPackagingCost + newWastage

@@ -32,6 +32,7 @@ class SpecificationBase(BaseModel):
     sale_price: float = Field(gt=0)
     ingredient_cost: float = Field(ge=0)
     packaging_cost: float = Field(ge=0)
+    wastage_cost: float = Field(ge=0, default=0)
 
 
 class SpecificationCreate(SpecificationBase):
@@ -45,6 +46,7 @@ class SpecificationUpdate(BaseModel):
     sale_price: float | None = Field(default=None, gt=0)
     ingredient_cost: float | None = Field(default=None, ge=0)
     packaging_cost: float | None = Field(default=None, ge=0)
+    wastage_cost: float | None = Field(default=None, ge=0)
 
 
 class Specification(SpecificationBase):

@@ -5,7 +5,7 @@ from app.schemas.dishes import DishCreate, DishUpdate, SpecificationCreate, Spec
 
 
 def _spec_with_profit(spec: dict) -> dict:
-    cost = spec["ingredient_cost"] + spec["packaging_cost"]
+    cost = spec["ingredient_cost"] + spec["packaging_cost"] + spec.get("wastage_cost", 0)
     gross_profit = round(spec["sale_price"] - cost, 2)
     gross_margin = round(gross_profit / spec["sale_price"], 4) if spec["sale_price"] else 0
     return {**spec, "gross_profit": gross_profit, "gross_margin": gross_margin}

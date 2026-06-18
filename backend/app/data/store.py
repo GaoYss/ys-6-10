@@ -42,6 +42,7 @@ specifications: dict[str, dict] = {
         "sale_price": 38,
         "ingredient_cost": 18.5,
         "packaging_cost": 1.2,
+        "wastage_cost": 0.9,
     },
     "spec_beef_large": {
         "id": "spec_beef_large",
@@ -51,6 +52,7 @@ specifications: dict[str, dict] = {
         "sale_price": 58,
         "ingredient_cost": 29.8,
         "packaging_cost": 1.6,
+        "wastage_cost": 1.5,
     },
     "spec_tripe_regular": {
         "id": "spec_tripe_regular",
@@ -60,6 +62,7 @@ specifications: dict[str, dict] = {
         "sale_price": 46,
         "ingredient_cost": 20.4,
         "packaging_cost": 1.4,
+        "wastage_cost": 2.0,
     },
     "spec_mushroom_regular": {
         "id": "spec_mushroom_regular",
@@ -69,6 +72,7 @@ specifications: dict[str, dict] = {
         "sale_price": 28,
         "ingredient_cost": 11.6,
         "packaging_cost": 1.0,
+        "wastage_cost": 0.6,
     },
 }
 

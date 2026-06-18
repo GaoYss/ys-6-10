@@ -10,6 +10,7 @@ const initialForm = {
   sale_price: '',
   ingredient_cost: '',
   packaging_cost: '',
+  wastage_cost: '',
 }
 
 export function Specifications({ dishes, specifications, refresh }) {
@@ -24,6 +25,7 @@ export function Specifications({ dishes, specifications, refresh }) {
       sale_price: Number(form.sale_price),
       ingredient_cost: Number(form.ingredient_cost),
       packaging_cost: Number(form.packaging_cost),
+      wastage_cost: Number(form.wastage_cost) || 0,
     })
     setForm(initialForm)
     refresh()
@@ -56,7 +58,7 @@ export function Specifications({ dishes, specifications, refresh }) {
                 <dl>
                   <div><dt>出品量</dt><dd>{spec.serving_size}</dd></div>
                   <div><dt>售价</dt><dd>¥{spec.sale_price}</dd></div>
-                  <div><dt>成本</dt><dd>¥{(spec.ingredient_cost + spec.packaging_cost).toFixed(1)}</dd></div>
+                  <div><dt>成本</dt><dd>¥{(spec.ingredient_cost + spec.packaging_cost + (spec.wastage_cost || 0)).toFixed(1)}</dd></div>
                   <div><dt>毛利率</dt><dd>{Math.round(spec.gross_margin * 100)}%</dd></div>
                 </dl>
                 <button className="danger icon-only" onClick={() => remove(spec)} type="button" title="删除规格">
@@ -101,10 +103,16 @@ export function Specifications({ dishes, specifications, refresh }) {
               <input type="number" min="0" step="0.1" value={form.ingredient_cost} onChange={(event) => updateField('ingredient_cost', event.target.value)} required />
             </label>
           </div>
-          <label>
-            包装/损耗成本
-            <input type="number" min="0" step="0.1" value={form.packaging_cost} onChange={(event) => updateField('packaging_cost', event.target.value)} required />
-          </label>
+          <div className="form-grid">
+            <label>
+              包装成本
+              <input type="number" min="0" step="0.1" value={form.packaging_cost} onChange={(event) => updateField('packaging_cost', event.target.value)} required />
+            </label>
+            <label>
+              损耗成本
+              <input type="number" min="0" step="0.1" value={form.wastage_cost} onChange={(event) => updateField('wastage_cost', event.target.value)} placeholder="可选，默认 0" />
+            </label>
+          </div>
           <button className="primary" type="submit">
             <Save size={16} />
             <span>保存规格</span>

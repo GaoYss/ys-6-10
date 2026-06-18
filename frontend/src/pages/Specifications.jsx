@@ -58,7 +58,9 @@ export function Specifications({ dishes, specifications, refresh }) {
                 <dl>
                   <div><dt>出品量</dt><dd>{spec.serving_size}</dd></div>
                   <div><dt>售价</dt><dd>¥{spec.sale_price}</dd></div>
-                  <div><dt>成本</dt><dd>¥{(spec.ingredient_cost + spec.packaging_cost + (spec.wastage_cost || 0)).toFixed(1)}</dd></div>
+                  <div><dt>原料成本</dt><dd>¥{spec.ingredient_cost.toFixed(1)}</dd></div>
+                  <div><dt>包装成本</dt><dd>¥{spec.packaging_cost.toFixed(1)}</dd></div>
+                  <div><dt>损耗</dt><dd>¥{(spec.wastage_cost || 0).toFixed(1)}</dd></div>
                   <div><dt>毛利率</dt><dd>{Math.round(spec.gross_margin * 100)}%</dd></div>
                 </dl>
                 <button className="danger icon-only" onClick={() => remove(spec)} type="button" title="删除规格">

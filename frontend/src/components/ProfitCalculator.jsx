@@ -193,6 +193,9 @@ export function ProfitCalculator({ dishes, specifications }) {
                     onChange={(e) => setSalePriceAdj(e.target.value)}
                     placeholder="正数上调，负数下调"
                   />
+                  <small className="input-hint">
+                    {adjustMode === 'percent' ? '按当前售价比例调整' : '原始售价±调整金额'}
+                  </small>
                 </label>
                 <label>
                   原料成本调整 {adjustMode === 'percent' ? '(%)' : '(¥)'}
@@ -203,6 +206,9 @@ export function ProfitCalculator({ dishes, specifications }) {
                     onChange={(e) => setIngredientCostAdj(e.target.value)}
                     placeholder="正数增加，负数减少"
                   />
+                  <small className="input-hint">
+                    {adjustMode === 'percent' ? '按当前原料成本比例调整' : '原始原料成本±调整金额'}
+                  </small>
                 </label>
               </div>
               <div className="form-grid">
@@ -215,6 +221,9 @@ export function ProfitCalculator({ dishes, specifications }) {
                     onChange={(e) => setPackagingCostAdj(e.target.value)}
                     placeholder="正数增加，负数减少"
                   />
+                  <small className="input-hint">
+                    {adjustMode === 'percent' ? '按当前包装成本比例调整' : '原始包装成本±调整金额'}
+                  </small>
                 </label>
                 <label>
                   损耗调整 {adjustMode === 'percent' ? '(占原料%)' : '(¥)'}
@@ -223,8 +232,13 @@ export function ProfitCalculator({ dishes, specifications }) {
                     step="0.1"
                     value={wastageAdj}
                     onChange={(e) => setWastageAdj(e.target.value)}
-                    placeholder={adjustMode === 'percent' ? '例如 5 表示占原料5%' : '正数为额外损耗成本'}
+                    placeholder={adjustMode === 'percent' ? '例如 5 表示占新原料5%' : '原始损耗±调整金额'}
                   />
+                  <small className="input-hint">
+                    {adjustMode === 'percent'
+                      ? '按调整后的原料成本比例计算'
+                      : '正数增加，负数减少损耗金额'}
+                  </small>
                 </label>
               </div>
             </div>

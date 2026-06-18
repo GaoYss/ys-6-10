@@ -408,8 +408,8 @@ textarea {
 
 .spec-card dl {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px 12px;
   margin: 16px 0 0;
 }
 
@@ -744,6 +744,14 @@ textarea {
 
 .full-width {
   width: 100%;
+}
+
+.input-hint {
+  display: block;
+  font-size: 11px;
+  color: #88968a;
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 @media (max-width: 980px) {

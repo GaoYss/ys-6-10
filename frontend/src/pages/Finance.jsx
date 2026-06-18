@@ -1,6 +1,7 @@
 import { MetricCard } from '../components/MetricCard.jsx'
+import { ProfitCalculator } from '../components/ProfitCalculator.jsx'
 
-export function Finance({ profitReport, summary }) {
+export function Finance({ profitReport, summary, dishes, specifications }) {
   const totalProfit = profitReport.reduce((sum, item) => sum + item.gross_profit, 0)
   const totalRevenue = profitReport.reduce((sum, item) => sum + item.sale_price, 0)
   const totalCost = profitReport.reduce((sum, item) => sum + item.cost, 0)
@@ -14,43 +15,49 @@ export function Finance({ profitReport, summary }) {
         <MetricCard label="平均毛利率" value={`${Math.round((summary?.average_margin ?? 0) * 100)}%`} helper="全规格平均" />
       </section>
 
-      <section className="panel">
-        <div className="section-title">
-          <h2>成本利润核算</h2>
-          <span>{profitReport.length} 条</span>
-        </div>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>菜品</th>
-                <th>规格</th>
-                <th>售价</th>
-                <th>成本</th>
-                <th>毛利</th>
-                <th>毛利率</th>
-              </tr>
-            </thead>
-            <tbody>
-              {profitReport.map((line) => (
-                <tr key={`${line.dish_id}-${line.spec_name}`}>
-                  <td><strong>{line.dish_name}</strong></td>
-                  <td>{line.spec_name}</td>
-                  <td>¥{line.sale_price}</td>
-                  <td>¥{line.cost}</td>
-                  <td>¥{line.gross_profit}</td>
-                  <td>
-                    <div className="margin-cell">
-                      <span style={{ width: `${Math.round(line.gross_margin * 100)}%` }} />
-                      <b>{Math.round(line.gross_margin * 100)}%</b>
-                    </div>
-                  </td>
+      <div className="two-column">
+        <section className="panel">
+          <div className="section-title">
+            <h2>成本利润核算</h2>
+            <span>{profitReport.length} 条</span>
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>菜品</th>
+                  <th>规格</th>
+                  <th>售价</th>
+                  <th>成本</th>
+                  <th>毛利</th>
+                  <th>毛利率</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {profitReport.map((line) => (
+                  <tr key={`${line.dish_id}-${line.spec_name}`}>
+                    <td><strong>{line.dish_name}</strong></td>
+                    <td>{line.spec_name}</td>
+                    <td>¥{line.sale_price}</td>
+                    <td>¥{line.cost}</td>
+                    <td>¥{line.gross_profit}</td>
+                    <td>
+                      <div className="margin-cell">
+                        <span style={{ width: `${Math.round(line.gross_margin * 100)}%` }} />
+                        <b>{Math.round(line.gross_margin * 100)}%</b>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div className="side-panel">
+          <ProfitCalculator dishes={dishes} specifications={specifications} />
         </div>
-      </section>
+      </div>
     </div>
   )
 }

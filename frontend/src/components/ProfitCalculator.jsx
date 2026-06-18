@@ -27,6 +27,7 @@ export function ProfitCalculator({ dishes, specifications }) {
       salePrice: selectedSpec.sale_price,
       ingredientCost: selectedSpec.ingredient_cost,
       packagingCost: selectedSpec.packaging_cost,
+      wastage: 0,
       cost,
       grossProfit,
       grossMargin,
@@ -50,12 +51,12 @@ export function ProfitCalculator({ dishes, specifications }) {
       newSalePrice = Math.max(0, original.salePrice + priceAdjNum)
       newIngredientCost = Math.max(0, original.ingredientCost + ingredAdjNum)
       newPackagingCost = Math.max(0, original.packagingCost + packAdjNum)
-      newWastage = Math.max(0, 0 + wasteAdjNum)
+      newWastage = Math.max(0, wasteAdjNum)
     } else {
       newSalePrice = Math.max(0, original.salePrice * (1 + priceAdjNum / 100))
       newIngredientCost = Math.max(0, original.ingredientCost * (1 + ingredAdjNum / 100))
       newPackagingCost = Math.max(0, original.packagingCost * (1 + packAdjNum / 100))
-      newWastage = Math.max(0, 0 + wasteAdjNum)
+      newWastage = Math.max(0, original.ingredientCost * (wasteAdjNum / 100))
     }
 
     const newCost = newIngredientCost + newPackagingCost + newWastage
@@ -125,6 +126,11 @@ export function ProfitCalculator({ dishes, specifications }) {
 
         {selectedSpec && original && (
           <>
+            <div className="calc-safe-notice">
+              <Info size={14} />
+              <span>仅试算预览，不会修改正式规格数据</span>
+            </div>
+
             <div className="calc-original">
               <span className="calc-label">原始数据</span>
               <div className="calc-original-grid">
@@ -137,8 +143,12 @@ export function ProfitCalculator({ dishes, specifications }) {
                   <strong>¥{original.ingredientCost.toFixed(2)}</strong>
                 </div>
                 <div>
-                  <span>包装损耗成本</span>
+                  <span>包装成本</span>
                   <strong>¥{original.packagingCost.toFixed(2)}</strong>
+                </div>
+                <div>
+                  <span>损耗</span>
+                  <strong>¥{original.wastage.toFixed(2)}</strong>
                 </div>
                 <div>
                   <span>毛利</span>
@@ -206,13 +216,13 @@ export function ProfitCalculator({ dishes, specifications }) {
                   />
                 </label>
                 <label>
-                  损耗调整 (¥)
+                  损耗调整 {adjustMode === 'percent' ? '(占原料%)' : '(¥)'}
                   <input
                     type="number"
                     step="0.1"
                     value={wastageAdj}
                     onChange={(e) => setWastageAdj(e.target.value)}
-                    placeholder="正数为额外损耗成本"
+                    placeholder={adjustMode === 'percent' ? '例如 5 表示占原料5%' : '正数为额外损耗成本'}
                   />
                 </label>
               </div>
@@ -220,13 +230,7 @@ export function ProfitCalculator({ dishes, specifications }) {
 
             {calculated && (
               <div className="calc-result">
-                <div className="calc-result-header">
-                  <span className="calc-label">试算结果</span>
-                  <span className="calc-safe-hint">
-                    <Info size={13} />
-                    仅试算预览，不会修改正式规格数据
-                  </span>
-                </div>
+                <span className="calc-label">试算结果</span>
                 <div className="calc-result-grid">
                   <div className="result-item">
                     <span>新售价</span>

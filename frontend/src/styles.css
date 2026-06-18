@@ -639,6 +639,29 @@ textarea {
   padding: 14px;
 }
 
+.calc-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calc-result-header .calc-label {
+  margin-bottom: 0;
+}
+
+.calc-safe-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #2e7d32;
+  background: #c8e6c9;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
 .calc-result-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Calculator, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react'
+import { Calculator, Info, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react'
 
 export function ProfitCalculator({ dishes, specifications }) {
   const [selectedSpecId, setSelectedSpecId] = useState('')
@@ -7,6 +7,7 @@ export function ProfitCalculator({ dishes, specifications }) {
   const [salePriceAdj, setSalePriceAdj] = useState('')
   const [ingredientCostAdj, setIngredientCostAdj] = useState('')
   const [packagingCostAdj, setPackagingCostAdj] = useState('')
+  const [wastageAdj, setWastageAdj] = useState('')
 
   const selectedSpec = useMemo(() => {
     return specifications.find((spec) => spec.id === selectedSpecId) || null
@@ -38,22 +39,26 @@ export function ProfitCalculator({ dishes, specifications }) {
     const priceAdjNum = parseFloat(salePriceAdj) || 0
     const ingredAdjNum = parseFloat(ingredientCostAdj) || 0
     const packAdjNum = parseFloat(packagingCostAdj) || 0
+    const wasteAdjNum = parseFloat(wastageAdj) || 0
 
     let newSalePrice
     let newIngredientCost
     let newPackagingCost
+    let newWastage
 
     if (adjustMode === 'absolute') {
       newSalePrice = Math.max(0, original.salePrice + priceAdjNum)
       newIngredientCost = Math.max(0, original.ingredientCost + ingredAdjNum)
       newPackagingCost = Math.max(0, original.packagingCost + packAdjNum)
+      newWastage = Math.max(0, 0 + wasteAdjNum)
     } else {
       newSalePrice = Math.max(0, original.salePrice * (1 + priceAdjNum / 100))
       newIngredientCost = Math.max(0, original.ingredientCost * (1 + ingredAdjNum / 100))
       newPackagingCost = Math.max(0, original.packagingCost * (1 + packAdjNum / 100))
+      newWastage = Math.max(0, 0 + wasteAdjNum)
     }
 
-    const newCost = newIngredientCost + newPackagingCost
+    const newCost = newIngredientCost + newPackagingCost + newWastage
     const newGrossProfit = newSalePrice - newCost
     const newGrossMargin = newSalePrice > 0 ? newGrossProfit / newSalePrice : 0
 
@@ -64,18 +69,20 @@ export function ProfitCalculator({ dishes, specifications }) {
       salePrice: newSalePrice,
       ingredientCost: newIngredientCost,
       packagingCost: newPackagingCost,
+      wastage: newWastage,
       cost: newCost,
       grossProfit: newGrossProfit,
       grossMargin: newGrossMargin,
       profitDiff,
       marginDiff,
     }
-  }, [original, adjustMode, salePriceAdj, ingredientCostAdj, packagingCostAdj])
+  }, [original, adjustMode, salePriceAdj, ingredientCostAdj, packagingCostAdj, wastageAdj])
 
   const reset = () => {
     setSalePriceAdj('')
     setIngredientCostAdj('')
     setPackagingCostAdj('')
+    setWastageAdj('')
   }
 
   const formatDiff = (value, isPercent = false) => {
@@ -126,8 +133,12 @@ export function ProfitCalculator({ dishes, specifications }) {
                   <strong>¥{original.salePrice.toFixed(2)}</strong>
                 </div>
                 <div>
-                  <span>成本</span>
-                  <strong>¥{original.cost.toFixed(2)}</strong>
+                  <span>原料成本</span>
+                  <strong>¥{original.ingredientCost.toFixed(2)}</strong>
+                </div>
+                <div>
+                  <span>包装损耗成本</span>
+                  <strong>¥{original.packagingCost.toFixed(2)}</strong>
                 </div>
                 <div>
                   <span>毛利</span>
@@ -183,21 +194,39 @@ export function ProfitCalculator({ dishes, specifications }) {
                   />
                 </label>
               </div>
-              <label>
-                包装/损耗成本调整 {adjustMode === 'percent' ? '(%)' : '(¥)'}
-                <input
-                  type="number"
-                  step="0.1"
-                  value={packagingCostAdj}
-                  onChange={(e) => setPackagingCostAdj(e.target.value)}
-                  placeholder="正数增加，负数减少"
-                />
-              </label>
+              <div className="form-grid">
+                <label>
+                  包装成本调整 {adjustMode === 'percent' ? '(%)' : '(¥)'}
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={packagingCostAdj}
+                    onChange={(e) => setPackagingCostAdj(e.target.value)}
+                    placeholder="正数增加，负数减少"
+                  />
+                </label>
+                <label>
+                  损耗调整 (¥)
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={wastageAdj}
+                    onChange={(e) => setWastageAdj(e.target.value)}
+                    placeholder="正数为额外损耗成本"
+                  />
+                </label>
+              </div>
             </div>
 
             {calculated && (
               <div className="calc-result">
-                <span className="calc-label">试算结果</span>
+                <div className="calc-result-header">
+                  <span className="calc-label">试算结果</span>
+                  <span className="calc-safe-hint">
+                    <Info size={13} />
+                    仅试算预览，不会修改正式规格数据
+                  </span>
+                </div>
                 <div className="calc-result-grid">
                   <div className="result-item">
                     <span>新售价</span>
@@ -206,7 +235,25 @@ export function ProfitCalculator({ dishes, specifications }) {
                     </div>
                   </div>
                   <div className="result-item">
-                    <span>新成本</span>
+                    <span>新原料成本</span>
+                    <div className="result-value">
+                      <strong>¥{calculated.ingredientCost.toFixed(2)}</strong>
+                    </div>
+                  </div>
+                  <div className="result-item">
+                    <span>新包装成本</span>
+                    <div className="result-value">
+                      <strong>¥{calculated.packagingCost.toFixed(2)}</strong>
+                    </div>
+                  </div>
+                  <div className="result-item">
+                    <span>新损耗</span>
+                    <div className="result-value">
+                      <strong>¥{calculated.wastage.toFixed(2)}</strong>
+                    </div>
+                  </div>
+                  <div className="result-item">
+                    <span>新成本合计</span>
                     <div className="result-value">
                       <strong>¥{calculated.cost.toFixed(2)}</strong>
                     </div>
